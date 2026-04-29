@@ -37,7 +37,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // 1. Get user details from frontend
     const { fullName, email, username, password } = req.body;
-    console.log("email : ", email);
 
     // 2. validation
     if ([fullName, email, username, password].some((field) => field?.trim() === "")) {
@@ -96,7 +95,6 @@ const registerUser = asyncHandler(async (req, res) => {
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User Registered Successfully")
     )
-
 })
 
 
@@ -275,12 +273,12 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Avatar file is missing")
     }
 
-    
+
     const avatar = await uploadOnCloudinary(avatarLocalPath)
-    
+
     // Todo: delete old image - assignment
 
-    
+
     if (!avatar.url) {
         throw new ApiError(400, "Error while uploading on avatar")
     }
@@ -333,10 +331,10 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 })
 
 
-const getUserChannelProfile = asyncHandler( async (req, res) => {
-    const {username} = req.params;
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+    const { username } = req.params;
 
-    if(!username?.trim()){
+    if (!username?.trim()) {
         throw new ApiError(400, "username is missing");
     }
 
@@ -372,7 +370,7 @@ const getUserChannelProfile = asyncHandler( async (req, res) => {
                 },
                 isSubscribed: {
                     $cond: {
-                        if: {$in: [req.user?._id, "$subscribers.subscriber"]},
+                        if: { $in: [req.user?._id, "$subscribers.subscriber"] },
                         then: true,
                         else: false
                     }
@@ -395,18 +393,18 @@ const getUserChannelProfile = asyncHandler( async (req, res) => {
 
     console.log(channel);
 
-    if(!channel?.length){
+    if (!channel?.length) {
         throw new ApiError(404, "channel does not exists")
     }
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(200, channel[0], "User channel fetched successfully")
-    )
+        .status(200)
+        .json(
+            new ApiResponse(200, channel[0], "User channel fetched successfully")
+        )
 })
 
-const getWatchHistory = asyncHandler( async (req, res) => {
+const getWatchHistory = asyncHandler(async (req, res) => {
     const user = await User.aggregate([
         {
             $match: {
@@ -451,14 +449,14 @@ const getWatchHistory = asyncHandler( async (req, res) => {
     ])
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(
-            200, 
-            user[0].watchHistory,
-            "watch history fetched successfully"
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                user[0].watchHistory,
+                "watch history fetched successfully"
+            )
         )
-    )
 })
 
 export {
